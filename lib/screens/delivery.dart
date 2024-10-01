@@ -26,20 +26,17 @@ class DeliveryScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.green,
-                child: Text(
-                  'LOGO',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),
+              ClipOval(
+                child: Image.asset(
+                  'assets/delivery.jpg',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(height: 10),
               const Text(
-                'Stock',
+                'Delivery',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -59,7 +56,7 @@ class DeliveryScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
-                child: const Text('Confirm'),
+                child: const Text('Confirmer'),
               ),
               const SizedBox(height: 20),
               Container(
@@ -79,11 +76,11 @@ class DeliveryScreen extends StatelessWidget {
               decoration: const BoxDecoration(
                 color: Colors.grey,
               ),
-              child: Image.asset('assets/QR.png'),
+              child: Image.asset('assets/paysage.jpg'),
             ),
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('Home'),
+              title: const Text('Accueil'),
               onTap: () {
                 Navigator.push(
                   context,
@@ -94,7 +91,7 @@ class DeliveryScreen extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              title: const Text('Paramètres'),
               onTap: () {
                 Navigator.pop(context);
               },

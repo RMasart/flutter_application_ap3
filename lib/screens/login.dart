@@ -8,7 +8,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Title'),
+        title: const Text('Login'),
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () {
