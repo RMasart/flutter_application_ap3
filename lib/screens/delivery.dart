@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_ap3/screens/lists.dart';
+import 'package:flutter_application_ap3/screens/lists.dart'; // Importer la page de liste des produits si nécessaire
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class DeliveryScreen extends StatelessWidget {
+  const DeliveryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Title'),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
+        title: const Text('ALL4SPORT - Livraison'),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            );
           },
         ),
       ),
@@ -35,55 +39,21 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Text(
-                'All4Sport',
+                'Stock',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  const Text('Name :'),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        fillColor: Colors.grey[300],
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              _buildInputField('Référence :'),
               const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Text('Password :'),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        fillColor: Colors.grey[300],
-                        filled: true,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              _buildInputField('Entrepôt :'),
+              const SizedBox(height: 10),
+              _buildInputField('Quantité :'),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProductListScreen(),
-                    ),
-                  );
-                },
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding:
@@ -106,8 +76,8 @@ class LoginPage extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
+              decoration: const BoxDecoration(
+                color: Colors.grey,
               ),
               child: Image.asset('assets/QR.png'),
             ),
@@ -115,7 +85,11 @@ class LoginPage extends StatelessWidget {
               leading: const Icon(Icons.home),
               title: const Text('Home'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ProductListScreen()),
+                );
               },
             ),
             ListTile(
@@ -128,6 +102,24 @@ class LoginPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  static Widget _buildInputField(String label) {
+    return Row(
+      children: [
+        Text(label),
+        const SizedBox(width: 10),
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              fillColor: Colors.grey[300],
+              filled: true,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
