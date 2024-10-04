@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_ap3/screens/lists.dart'
-    hide Product; // Cacher Product
-import 'package:flutter_application_ap3/screens/Product.dart'
-    as productModel; // Utiliser un alias pour Product
+import 'package:path_provider/path_provider.dart';
+
+import 'Product.dart' as productModel;
 
 class DeliveryScreen extends StatefulWidget {
   const DeliveryScreen({super.key});
@@ -14,7 +13,7 @@ class DeliveryScreen extends StatefulWidget {
 }
 
 class _DeliveryScreenState extends State<DeliveryScreen> {
-  List<productModel.Product> products = []; // Liste pour stocker les produits
+  List<productModel.Product> products = [];
   final TextEditingController referenceController = TextEditingController();
   final TextEditingController designationController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
@@ -22,7 +21,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProductsFromFile(); // Charger les produits au démarrage
+    _loadProductsFromFile();
   }
 
   @override
@@ -33,12 +32,13 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     super.dispose();
   }
 
-  // Modification de la méthode pour retourner le chemin du fichier dans le dossier json
   Future<String> _getLocalFilePath() async {
     final directory = Directory('${Directory.current.path}/json');
+
     if (!await directory.exists()) {
-      await directory.create(recursive: true); // Créer le dossier si nécessaire
+      await directory.create(recursive: true);
     }
+
     return '${directory.path}/products.json';
   }
 
@@ -49,21 +49,22 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     await file.writeAsString(jsonString);
   }
 
-  Future<List<productModel.Product>> _loadProductsFromFile() async {
+  Future<void> _loadProductsFromFile() async {
     try {
       final filePath = await _getLocalFilePath();
       final file = File(filePath);
-      final jsonString = await file.readAsString();
-      final List<dynamic> jsonData = jsonDecode(jsonString);
+      if (await file.exists()) {
+        final jsonString = await file.readAsString();
+        final List<dynamic> jsonData = jsonDecode(jsonString);
 
-      // Retourner la liste des produits chargés
-      return jsonData
-          .map((json) => productModel.Product.fromJson(json))
-          .toList();
+        setState(() {
+          products = jsonData
+              .map((json) => productModel.Product.fromJson(json))
+              .toList();
+        });
+      }
     } catch (e) {
-      // Gérer les erreurs (fichier introuvable, etc.)
       print('Erreur lors du chargement des produits: $e');
-      return []; // Retourner une liste vide en cas d'erreur
     }
   }
 
@@ -77,12 +78,11 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         products.add(productModel.Product(
             reference: reference,
             designation: designation,
-            quantity: quantity)); // Ajouter le produit
+            quantity: quantity));
       });
 
-      _saveProductsToFile(); // Enregistrer les produits après ajout
+      _saveProductsToFile();
 
-      // Réinitialiser les champs après l'ajout
       referenceController.clear();
       designationController.clear();
       quantityController.clear();
@@ -90,9 +90,8 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         SnackBar(content: Text('Produit ajouté : $designation')),
       );
     } else {
-      // Afficher un message d'erreur si les champs sont invalides
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content: Text('Veuillez remplir tous les champs correctement.')),
       );
     }
@@ -103,16 +102,6 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ALL4SPORT - Livraison'),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -144,8 +133,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               _buildInputField('Quantité :', quantityController),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed:
-                    _addProduct, // Appel de la méthode pour ajouter un produit
+                onPressed: _addProduct,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                   padding:
@@ -171,37 +159,6 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               ),
             ],
           ),
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-              ),
-              child: Image.asset('assets/paysage.jpg'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Accueil'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ProductListScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Paramètres'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
         ),
       ),
     );
