@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_ap3/screens/lists.dart';
 
-class LoginPage extends StatelessWidget {
+class AuthService {
+  bool isLoggedIn = false;
+
+  void verifyCredentials(String username, String password) {
+    if (username == 'toto' && password == '1234') {
+      isLoggedIn = true;
+    } else {
+      isLoggedIn = false;
+    }
+  }
+}
+
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +69,7 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
+                      controller: _idController,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
                         fillColor: Colors.grey[300],
@@ -64,6 +86,7 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         border: const OutlineInputBorder(),
@@ -77,12 +100,28 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProductListScreen(),
-                    ),
-                  );
+                  String username = _idController.text;
+                  String password = _passwordController.text;
+
+                  // Vérifie les identifiants
+                  _authService.verifyCredentials(username, password);
+
+                  if (_authService.isLoggedIn) {
+                    // Connexion réussie, redirige vers la page ProductListScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProductListScreen(),
+                      ),
+                    );
+                  } else {
+                    // Affiche un message d'erreur si les identifiants sont incorrects
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Identifiant ou mot de passe incorrect'),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
