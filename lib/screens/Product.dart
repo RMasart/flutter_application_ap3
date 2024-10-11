@@ -16,12 +16,4 @@ class Product {
       'quantity': quantity,
     };
   }
-
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      reference: json['reference'],
-      entreprise: json['entreprise'],
-      quantity: json['quantity'],
-    );
-  }
 }

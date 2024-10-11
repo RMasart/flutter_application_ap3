@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'Product.dart' as productModel;
+import 'package:path_provider/path_provider.dart';
+import 'product.dart' as productModel;
 
 class DeliveryScreen extends StatefulWidget {
   const DeliveryScreen({super.key});
@@ -31,13 +32,9 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   }
 
   Future<String> _getLocalFilePath() async {
-    final directory = Directory('${Directory.current.path}/json');
-
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
-    }
-
-    return '${directory.path}/products.json';
+    final directory = await getApplicationDocumentsDirectory();
+    final path = '${directory.path}/products.json';
+    return path;
   }
 
   Future<void> _saveProductsToFile() async {
@@ -56,14 +53,24 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         final List<dynamic> jsonData = jsonDecode(jsonString);
 
         setState(() {
-          products = jsonData
-              .map((json) => productModel.Product.fromJson(json))
-              .toList();
+          products = jsonData.map((json) {
+            return productModel.Product(
+              reference: json['reference'],
+              entreprise: json['entreprise'],
+              quantity: json['quantity'],
+            );
+          }).toList();
         });
       }
     } catch (e) {
       print('Erreur lors du chargement des produits: $e');
     }
+  }
+
+  // Méthode mise à jour pour générer le JSON formaté sans les []
+  String _getJsonString() {
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    return products.map((p) => encoder.convert(p.toJson())).join('\n');
   }
 
   void _addProduct() {
@@ -143,19 +150,16 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                 child: const Text('Confirmer'),
               ),
               const SizedBox(height: 20),
+              // Conteneur pour afficher le JSON formaté sans les []
               Container(
                 height: 150,
                 width: double.infinity,
                 color: Colors.grey[400],
-                child: ListView.builder(
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(products[index].entreprise),
-                      subtitle: Text(
-                          'Référence: ${products[index].reference}, Quantité: ${products[index].quantity}'),
-                    );
-                  },
+                child: SingleChildScrollView(
+                  child: Text(
+                    _getJsonString(),
+                    style: const TextStyle(fontSize: 12, color: Colors.black),
+                  ),
                 ),
               ),
             ],
