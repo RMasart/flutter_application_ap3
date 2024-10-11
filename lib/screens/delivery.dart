@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-
 import 'Product.dart' as productModel;
 
 class DeliveryScreen extends StatefulWidget {
@@ -15,7 +13,7 @@ class DeliveryScreen extends StatefulWidget {
 class _DeliveryScreenState extends State<DeliveryScreen> {
   List<productModel.Product> products = [];
   final TextEditingController referenceController = TextEditingController();
-  final TextEditingController designationController = TextEditingController();
+  final TextEditingController entrepriseController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
 
   @override
@@ -27,7 +25,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   @override
   void dispose() {
     referenceController.dispose();
-    designationController.dispose();
+    entrepriseController.dispose();
     quantityController.dispose();
     super.dispose();
   }
@@ -69,30 +67,33 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   }
 
   void _addProduct() {
-    final String reference = referenceController.text;
-    final String designation = designationController.text;
-    final int? quantity = int.tryParse(quantityController.text);
+    final String reference = referenceController.text; // Référence
+    final String entreprise = entrepriseController.text;
+    final int? quantity = int.tryParse(quantityController.text); // Quantité
 
-    if (reference.isNotEmpty && designation.isNotEmpty && quantity != null) {
+    if (reference.isNotEmpty && entreprise.isNotEmpty && quantity != null) {
       setState(() {
+        // Créez un nouveau produit avec la référence, l'entreprise et la quantité
         products.add(productModel.Product(
-            reference: reference,
-            designation: designation,
-            quantity: quantity));
+          reference: reference,
+          entreprise: entreprise,
+          quantity: quantity,
+        ));
       });
 
       _saveProductsToFile();
 
       referenceController.clear();
-      designationController.clear();
+      entrepriseController.clear();
       quantityController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Produit ajouté : $designation')),
+        SnackBar(content: Text('Produit ajouté : $entreprise')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Veuillez remplir tous les champs correctement.')),
+          content: Text('Veuillez remplir tous les champs correctement.'),
+        ),
       );
     }
   }
@@ -128,7 +129,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
               const SizedBox(height: 20),
               _buildInputField('Référence :', referenceController),
               const SizedBox(height: 10),
-              _buildInputField('Désignation :', designationController),
+              _buildInputField('Entreprise :', entrepriseController),
               const SizedBox(height: 10),
               _buildInputField('Quantité :', quantityController),
               const SizedBox(height: 20),
@@ -150,7 +151,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(products[index].designation),
+                      title: Text(products[index].entreprise),
                       subtitle: Text(
                           'Référence: ${products[index].reference}, Quantité: ${products[index].quantity}'),
                     );

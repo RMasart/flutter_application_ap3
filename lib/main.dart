@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_ap3/screens/lists.dart';
-import 'package:flutter_application_ap3/screens/ProductListScreen.dart';
 import 'package:flutter_application_ap3/screens/login.dart';
 
 void main() {

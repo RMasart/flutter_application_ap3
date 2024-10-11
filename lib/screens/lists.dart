@@ -9,13 +9,13 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  // Créez une liste de produits
   final List<Product> products = [
-    Product(
-        reference: 'A123', designation: 'Chaussures de course', quantity: 150),
-    Product(reference: 'B456', designation: 'Ballon de football', quantity: 80),
-    Product(reference: 'C789', designation: 'Raquette de tennis', quantity: 50),
-    Product(reference: 'D101', designation: 'Casque de vélo', quantity: 120),
-    Product(reference: 'E202', designation: 'Tapis de yoga', quantity: 70),
+    Product(reference: 'A123', entreprise: 'Nike', quantity: 150),
+    Product(reference: 'B456', entreprise: 'Adidas', quantity: 80),
+    Product(reference: 'C789', entreprise: 'Wilson', quantity: 50),
+    Product(reference: 'D101', entreprise: 'Bell', quantity: 120),
+    Product(reference: 'E202', entreprise: 'Lululemon', quantity: 70),
   ];
 
   @override
@@ -72,9 +72,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
           itemBuilder: (context, index) {
             return ListTile(
               leading: const Icon(Icons.inventory),
-              title: Text(products[index].designation),
+              title: Text(products[index].entreprise), // Entreprise
               subtitle: Text(
-                  'Référence: ${products[index].reference}, Stock: ${products[index].quantity}'),
+                  'Référence: ${products[index].reference}, Stock: ${products[index].quantity}'), // Numéro
             );
           },
         ),
@@ -84,13 +84,29 @@ class _ProductListScreenState extends State<ProductListScreen> {
 }
 
 class Product {
-  final String reference;
-  final String designation;
-  final int quantity;
+  final String reference; // Numéro
+  final String entreprise; // Entreprise
+  final int quantity; // Quantité
 
   Product({
     required this.reference,
-    required this.designation,
+    required this.entreprise,
     required this.quantity,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'reference': reference,
+      'entreprise': entreprise,
+      'quantity': quantity,
+    };
+  }
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      reference: json['reference'],
+      entreprise: json['entreprise'],
+      quantity: json['quantity'],
+    );
+  }
 }
