@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_ap3/screens/delivery.dart'; // Importer la page de livraison
+import 'package:flutter_application_ap3/screens/delivery.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -9,7 +9,6 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
-  // Créez une liste de produits
   final List<Product> products = [
     Product(reference: 'A123', entreprise: 'Nike', quantity: 150),
     Product(reference: 'B456', entreprise: 'Adidas', quantity: 80),
@@ -72,9 +71,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
           itemBuilder: (context, index) {
             return ListTile(
               leading: const Icon(Icons.inventory),
-              title: Text(products[index].entreprise), // Entreprise
+              title: Text(products[index].entreprise),
               subtitle: Text(
-                  'Référence: ${products[index].reference}, Stock: ${products[index].quantity}'), // Numéro
+                  'Référence: ${products[index].reference}, Stock: ${products[index].quantity}'),
             );
           },
         ),
@@ -84,9 +83,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
 }
 
 class Product {
-  final String reference; // Numéro
-  final String entreprise; // Entreprise
-  final int quantity; // Quantité
+  final String reference;
+  final String entreprise;
+  final int quantity;
 
   Product({
     required this.reference,
