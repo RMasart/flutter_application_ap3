@@ -13,8 +13,7 @@ class _QRCodePageState extends State<QRCodePage> {
   Barcode? result;
   QRViewController? controller;
   bool isCameraActive = false;
-  bool _dialogShown =
-      false; // Nouvelle variable pour contrôler l'affichage du dialogue
+  bool _dialogShown = false;
 
   @override
   void reassemble() {
@@ -92,9 +91,9 @@ class _QRCodePageState extends State<QRCodePage> {
       if (!_dialogShown) {
         setState(() {
           result = scanData;
-          _dialogShown = true; // Empêche l'affichage multiple du dialogue
+          _dialogShown = true;
         });
-        _showQRCodeReceivedDialog(); // Appelle le dialogue après avoir reçu le QR code
+        _showQRCodeReceivedDialog();
       }
     });
   }
@@ -112,7 +111,7 @@ class _QRCodePageState extends State<QRCodePage> {
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {
-                  _dialogShown = false; // Réinitialise le contrôle du dialogue
+                  _dialogShown = false;
                 });
               },
             ),
