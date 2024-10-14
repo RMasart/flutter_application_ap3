@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QRCodePage extends StatefulWidget {
-  const QRCodePage({Key? key}) : super(key: key);
+  const QRCodePage({super.key});
 
   @override
   State<QRCodePage> createState() => _QRCodePageState();
@@ -13,6 +13,8 @@ class _QRCodePageState extends State<QRCodePage> {
   Barcode? result;
   QRViewController? controller;
   bool isCameraActive = false;
+  bool _dialogShown =
+      false; // Nouvelle variable pour contrôler l'affichage du dialogue
 
   @override
   void reassemble() {
@@ -87,10 +89,37 @@ class _QRCodePageState extends State<QRCodePage> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+      if (!_dialogShown) {
+        setState(() {
+          result = scanData;
+          _dialogShown = true; // Empêche l'affichage multiple du dialogue
+        });
+        _showQRCodeReceivedDialog(); // Appelle le dialogue après avoir reçu le QR code
+      }
     });
+  }
+
+  void _showQRCodeReceivedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('QRcode reçu'),
+          content: Text('Contenu du QR Code : ${result!.code}'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  _dialogShown = false; // Réinitialise le contrôle du dialogue
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
