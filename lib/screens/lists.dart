@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_ap3/screens/delivery.dart';
+import 'package:flutter_application_ap3/screens/QRcode.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -47,7 +48,10 @@ class _ProductListScreenState extends State<ProductListScreen> {
               leading: Image.asset('assets/QR.png', width: 24, height: 24),
               title: const Text('QRCode'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const QRCodePage()),
+                );
               },
             ),
             ListTile(
