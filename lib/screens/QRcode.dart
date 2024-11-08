@@ -85,7 +85,7 @@ class _QRCodePageState extends State<QRCodePage> with WidgetsBindingObserver {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('QR code reçu'),
+          title: const Text('QR Code Detected'),
           content: Text('Contenu du QR Code : $qrContent'),
           actions: <Widget>[
             TextButton(
@@ -143,11 +143,6 @@ class _QRCodePageState extends State<QRCodePage> with WidgetsBindingObserver {
               ),
             ),
           ),
-          if (result != null)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text('Contenu du QR Code : $result'),
-            ),
         ],
       ),
     );
