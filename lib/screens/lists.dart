@@ -66,6 +66,16 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 );
               },
             ),
+            ListTile(
+              leading: Image.asset('assets/Local.png', width: 24, height: 24),
+              title: const Text('Geolocalisation'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const GeolocScreen()),
+                );
+              },
+            ),
           ],
         ),
       ),
