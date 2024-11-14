@@ -5,7 +5,9 @@ import 'package:path_provider/path_provider.dart';
 import 'product.dart' as productModel;
 
 class DeliveryScreen extends StatefulWidget {
-  const DeliveryScreen({super.key});
+  final String? initialReference;
+
+  const DeliveryScreen({Key? key, this.initialReference}) : super(key: key);
 
   @override
   _DeliveryScreenState createState() => _DeliveryScreenState();
@@ -20,6 +22,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   @override
   void initState() {
     super.initState();
+    referenceController.text = widget.initialReference ?? '';
     _loadProductsFromFile();
   }
 
@@ -67,20 +70,18 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     }
   }
 
-  // Méthode mise à jour pour générer le JSON formaté sans les []
   String _getJsonString() {
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
     return products.map((p) => encoder.convert(p.toJson())).join('\n');
   }
 
   void _addProduct() {
-    final String reference = referenceController.text; // Référence
+    final String reference = referenceController.text;
     final String entreprise = entrepriseController.text;
-    final int? quantity = int.tryParse(quantityController.text); // Quantité
+    final int? quantity = int.tryParse(quantityController.text);
 
     if (reference.isNotEmpty && entreprise.isNotEmpty && quantity != null) {
       setState(() {
-        // Créez un nouveau produit avec la référence, l'entreprise et la quantité
         products.add(productModel.Product(
           reference: reference,
           entreprise: entreprise,
@@ -150,7 +151,6 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                 child: const Text('Confirmer'),
               ),
               const SizedBox(height: 20),
-              // Conteneur pour afficher le JSON formaté sans les []
               Container(
                 height: 150,
                 width: double.infinity,

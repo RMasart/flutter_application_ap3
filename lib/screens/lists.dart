@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_ap3/screens/delivery.dart';
 import 'package:flutter_application_ap3/screens/QRcode.dart';
+import 'package:flutter_application_ap3/screens/Geolocation.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});

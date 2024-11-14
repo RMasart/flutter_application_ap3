@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert'; // Ajouté pour décoder le JSON
 import 'package:flutter/material.dart';
+import 'package:flutter_application_ap3/screens/delivery.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRCodePage extends StatefulWidget {
@@ -19,17 +21,9 @@ class _QRCodePageState extends State<QRCodePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
-    // Initialize the MobileScannerController
     controller = MobileScannerController();
-
-    // Listen to lifecycle changes
     WidgetsBinding.instance.addObserver(this);
-
-    // Start listening to scanner events
     _subscription = controller.barcodes.listen(_handleBarcode);
-
-    // Start the scanner
     _startScanner();
   }
 
@@ -72,31 +66,56 @@ class _QRCodePageState extends State<QRCodePage> with WidgetsBindingObserver {
   void _handleBarcode(BarcodeCapture capture) {
     final barcode = capture.barcodes.first;
     if (!_dialogShown && barcode.rawValue != null) {
-      setState(() {
-        result = barcode.rawValue!;
-        _dialogShown = true;
-      });
-      _showQRCodeReceivedDialog(result!);
+      try {
+        // Décodage du JSON pour extraire uniquement la référence
+        final Map<String, dynamic> decoded = jsonDecode(barcode.rawValue!);
+        final String reference = decoded["reference"] ?? '';
+
+        if (reference.isNotEmpty) {
+          setState(() {
+            result = reference; // Stocke seulement la référence
+            _dialogShown = true;
+          });
+
+          // Affiche le dialogue avec uniquement la référence
+          _showQRCodeFoundDialog(result!);
+        }
+      } catch (e) {
+        print("Erreur lors du traitement du QR code: $e");
+      }
     }
   }
 
-  void _showQRCodeReceivedDialog(String qrContent) {
-    showDialog(
+  Future<void> _showQRCodeFoundDialog(String reference) async {
+    await showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('QR Code Detected'),
-          content: Text('Contenu du QR Code : $qrContent'),
+          title: const Text('QR Code Found'),
+          content:
+              Text('A QR code with reference "$reference" has been detected.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
+              onPressed: () async {
+                Navigator.of(context).pop(); // Ferme le dialogue
+
+                // Arrête le scanner avant la navigation
+                await _stopScanner();
+
+                // Navigue vers la page DeliveryScreen avec la référence
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        DeliveryScreen(initialReference: reference),
+                  ),
+                );
+
                 setState(() {
-                  _dialogShown = false;
-                  result = null;
+                  _dialogShown = false; // Réinitialise le drapeau de dialogue
                 });
               },
+              child: const Text('Proceed'),
             ),
           ],
         );

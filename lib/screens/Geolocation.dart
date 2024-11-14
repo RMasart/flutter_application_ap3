@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class GeolocScreen extends StatefulWidget {
   const GeolocScreen({super.key});
@@ -13,8 +12,8 @@ class GeolocScreen extends StatefulWidget {
 class _GeolocScreenState extends State<GeolocScreen> {
   GoogleMapController? _mapController;
   LatLng? _currentPosition;
-  final CameraPosition _initialCameraPosition = CameraPosition(
-    target: LatLng(48.8566, 2.3522), // Paris par défaut
+  final CameraPosition _initialCameraPosition = const CameraPosition(
+    target: LatLng(48.8566, 2.3522),
     zoom: 14,
   );
 
@@ -24,34 +23,14 @@ class _GeolocScreenState extends State<GeolocScreen> {
     _checkLocationPermission();
   }
 
-  // Demander la permission d'accéder à la géolocalisation
+  // Demander la permission d'accéder à la géolocalisation avec Geolocator
   Future<void> _checkLocationPermission() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      _getCurrentLocation();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Permission de localisation refusée')),
-      );
-    }
-  }
-
-  // Obtenir la position actuelle du téléphone
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Service de localisation désactivé')),
-      );
-      return;
-    }
-
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Permission de localisation refusée')),
+          const SnackBar(content: Text('Permission de localisation refusée')),
         );
         return;
       }
@@ -59,15 +38,28 @@ class _GeolocScreenState extends State<GeolocScreen> {
 
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content:
                 Text('Permission de localisation refusée de façon permanente')),
       );
       return;
     }
 
+    _getCurrentLocation();
+  }
+
+  // Obtenir la position actuelle du téléphone
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Service de localisation désactivé')),
+      );
+      return;
+    }
+
     Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+      desiredAccuracy: LocationAccuracy.low,
     );
 
     setState(() {
@@ -85,10 +77,10 @@ class _GeolocScreenState extends State<GeolocScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Carte avec géolocalisation'),
+        title: const Text('Carte avec géolocalisation'),
       ),
       body: _currentPosition == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : GoogleMap(
               initialCameraPosition: _initialCameraPosition,
               myLocationEnabled: true,
@@ -99,7 +91,7 @@ class _GeolocScreenState extends State<GeolocScreen> {
               markers: _currentPosition != null
                   ? {
                       Marker(
-                        markerId: MarkerId('currentLocation'),
+                        markerId: const MarkerId('currentLocation'),
                         position: _currentPosition!,
                       )
                     }
