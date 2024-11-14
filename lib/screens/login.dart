@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               Row(
                 children: [
-                  const Text('Name :'),
+                  const Text('Login :'),
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextField(

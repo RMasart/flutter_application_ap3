@@ -86,7 +86,6 @@ class _GeolocScreenState extends State<GeolocScreen> {
               myLocationEnabled: true,
               onMapCreated: (controller) {
                 _mapController = controller;
-                _getCurrentLocation();
               },
               markers: _currentPosition != null
                   ? {
