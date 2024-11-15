@@ -18,6 +18,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   final TextEditingController referenceController = TextEditingController();
   final TextEditingController entrepriseController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
+  bool isOnline = false; // Par défaut hors ligne
 
   @override
   void initState() {
@@ -36,8 +37,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
 
   Future<String> _getLocalFilePath() async {
     final directory = await getApplicationDocumentsDirectory();
-    final path = '${directory.path}/products.json';
-    return path;
+    return '${directory.path}/products.json';
   }
 
   Future<void> _saveProductsToFile() async {
@@ -70,11 +70,6 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     }
   }
 
-  String _getJsonString() {
-    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-    return products.map((p) => encoder.convert(p.toJson())).join('\n');
-  }
-
   void _addProduct() {
     final String reference = referenceController.text;
     final String entreprise = entrepriseController.text;
@@ -91,12 +86,13 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
 
       _saveProductsToFile();
 
-      referenceController.clear();
-      entrepriseController.clear();
-      quantityController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Produit ajouté : $entreprise')),
       );
+
+      referenceController.clear();
+      entrepriseController.clear();
+      quantityController.clear();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -106,11 +102,70 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     }
   }
 
+  Future<void> _synchronizeData() async {
+    try {
+      for (var product in products) {
+        print('Synchronisation du produit : ${product.reference}');
+        // Simulez un appel API ici
+        await Future.delayed(
+            const Duration(seconds: 1)); // Simulation délai réseau
+      }
+
+      setState(() {
+        products.clear();
+      });
+      await _saveProductsToFile();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Synchronisation réussie.')),
+      );
+    } catch (e) {
+      print('Erreur lors de la synchronisation : $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erreur de synchronisation.')),
+      );
+    }
+  }
+
+  void _toggleOnlineStatus() {
+    setState(() {
+      isOnline = !isOnline; // Inverse l'état en ligne / hors ligne
+    });
+  }
+
+  void _sendToDatabase() async {
+    if (isOnline) {
+      await _synchronizeData();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vous êtes hors ligne.')),
+      );
+    }
+  }
+
+  String _getJsonString() {
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    return products.map((p) => encoder.convert(p.toJson())).join('\n');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('ALL4SPORT - Livraison'),
+        actions: [
+          GestureDetector(
+            onTap: _toggleOnlineStatus, // Permet de cliquer sur le cercle
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Icon(
+                Icons.circle,
+                color: isOnline ? Colors.green : Colors.red,
+                size: 16.0,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -149,6 +204,16 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                       const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 ),
                 child: const Text('Confirmer'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: isOnline ? _sendToDatabase : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isOnline ? Colors.blue : Colors.grey,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                ),
+                child: const Text('Envoyer vers la BDD'),
               ),
               const SizedBox(height: 20),
               Container(
