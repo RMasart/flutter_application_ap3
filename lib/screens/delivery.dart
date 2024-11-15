@@ -18,7 +18,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   final TextEditingController referenceController = TextEditingController();
   final TextEditingController entrepriseController = TextEditingController();
   final TextEditingController quantityController = TextEditingController();
-  bool isOnline = false; // Par défaut hors ligne
+  bool isOnline = false;
 
   @override
   void initState() {
