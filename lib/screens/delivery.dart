@@ -145,7 +145,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
 
   String _getJsonString() {
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-    return products.map((p) => encoder.convert(p.toJson())).join('\n');
+    return encoder.convert(products.map((p) => p.toJson()).toList());
   }
 
   @override

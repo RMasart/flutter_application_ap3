@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_ap3/screens/delivery.dart';
 import 'package:flutter_application_ap3/screens/QRcode.dart';
 import 'package:flutter_application_ap3/screens/Geolocation.dart';
+import 'package:flutter_application_ap3/screens/login.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -36,8 +37,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
             DrawerHeader(
               decoration: const BoxDecoration(
@@ -74,6 +74,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const GeolocScreen()),
+                );
+              },
+            ),
+            const Spacer(), // Utilise Spacer pour pousser l'élément vers le bas
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text('Déconnexion',
+                  style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (Route<dynamic> route) => false,
                 );
               },
             ),
