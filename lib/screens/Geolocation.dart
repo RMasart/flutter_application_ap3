@@ -23,7 +23,6 @@ class _GeolocScreenState extends State<GeolocScreen> {
     _checkLocationPermission();
   }
 
-  // Demander la permission d'accéder à la géolocalisation avec Geolocator
   Future<void> _checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {

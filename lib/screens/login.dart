@@ -5,7 +5,7 @@ class AuthService {
   bool isLoggedIn = false;
 
   void verifyCredentials(String username, String password) {
-    if (username == 'toto' && password == '1234') {
+    if (username == 'james' && password == '1234') {
       isLoggedIn = true;
     } else {
       isLoggedIn = false;

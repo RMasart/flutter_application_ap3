@@ -77,7 +77,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
                 );
               },
             ),
-            const Spacer(), // Utilise Spacer pour pousser l'élément vers le bas
+            const Spacer(),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
               title: const Text('Déconnexion',

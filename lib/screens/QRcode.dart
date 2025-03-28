@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert'; // Ajouté pour décoder le JSON
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_ap3/screens/delivery.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -67,17 +67,14 @@ class _QRCodePageState extends State<QRCodePage> with WidgetsBindingObserver {
     final barcode = capture.barcodes.first;
     if (!_dialogShown && barcode.rawValue != null) {
       try {
-        // Décodage du JSON pour extraire uniquement la référence
         final Map<String, dynamic> decoded = jsonDecode(barcode.rawValue!);
         final String reference = decoded["reference"] ?? '';
 
         if (reference.isNotEmpty) {
           setState(() {
-            result = reference; // Stocke seulement la référence
+            result = reference;
             _dialogShown = true;
           });
-
-          // Affiche le dialogue avec uniquement la référence
           _showQRCodeFoundDialog(result!);
         }
       } catch (e) {
@@ -98,12 +95,9 @@ class _QRCodePageState extends State<QRCodePage> with WidgetsBindingObserver {
           actions: <Widget>[
             TextButton(
               onPressed: () async {
-                Navigator.of(context).pop(); // Ferme le dialogue
+                Navigator.of(context).pop();
 
-                // Arrête le scanner avant la navigation
                 await _stopScanner();
-
-                // Navigue vers la page DeliveryScreen avec la référence
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) =>
@@ -112,7 +106,7 @@ class _QRCodePageState extends State<QRCodePage> with WidgetsBindingObserver {
                 );
 
                 setState(() {
-                  _dialogShown = false; // Réinitialise le drapeau de dialogue
+                  _dialogShown = false;
                 });
               },
               child: const Text('Proceed'),
